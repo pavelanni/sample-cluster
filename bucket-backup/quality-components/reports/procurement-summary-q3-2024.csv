@@ -1,0 +1,4 @@
+Month,Orders,Total_Spend,Average_Order_Value,On_Time_Delivery_Percent,Defect_Rate_Percent
+July,16,89500,5594,94,0.4
+August,18,102300,5683,98,0.2
+September,13,92200,7092,96,0.3
