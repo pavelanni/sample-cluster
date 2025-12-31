@@ -1,10 +1,16 @@
 #!/bin/bash
 # restore_buckets.sh - Restore demo buckets from backup
 
-set -e
+set -euo pipefail
 
-ALIAS="${1:-local}"
+ALIAS="${1:-sample}"
 BACKUP_DIR="${2:-./bucket-backup}"
+
+if ! command -v mc >/dev/null 2>&1; then
+    echo "Error: 'mc' (MinIO client) is not installed or not in PATH."
+    echo "Install from https://min.io/docs/minio/linux/reference/minio-mc.html"
+    exit 2
+fi
 
 if [ ! -d "$BACKUP_DIR" ]; then
     echo "Error: Backup directory not found: $BACKUP_DIR"
@@ -16,6 +22,13 @@ if [ ! -d "$BACKUP_DIR" ]; then
     echo "Example:"
     echo "  $0 local ./bucket-backup"
     exit 1
+fi
+
+# Verify alias exists in mc
+if ! mc alias list | grep -qF "${ALIAS}"; then
+    echo "Error: mc alias '${ALIAS}' not found. Configure with:"
+    echo "  mc alias set ${ALIAS} http://localhost:9000 <access-key> <secret-key>"
+    exit 3
 fi
 
 echo "Restoring demo buckets to alias: $ALIAS"
